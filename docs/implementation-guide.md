@@ -1,0 +1,317 @@
+# OCI IAM Identity Domains Implementation Guide
+
+**Applicable Environment:** OCI DoD Realm (IL4/IL5)
+**Purpose:** Configuration guidance for ATO compliance
+**Last Updated:** January 2026
+
+---
+
+## 1. Primary Authentication Mechanism
+
+### 1.1 Recommended Architecture: Federated CAC/PIV Authentication
+
+```
+[User with CAC] → [DoD Enterprise IdP] → [SAML Assertion] → [OCI IAM Identity Domain]
+                         ↓
+              [Certificate Validation]
+              [PKI Chain Verification]
+              [CRL/OCSP Check]
+```
+
+This architecture ensures:
+- Certificate validation occurs at the DoD-managed IdP
+- PKI chain verification against DoD Root CA hierarchy
+- Revocation checking via CRL/OCSP
+- Identity proofing (IAL3) inherited from PIV issuance process
+
+### 1.2 SAML 2.0 Federation Configuration
+
+**Navigation:** Identity & Security → Domains → [Domain] → Security → Identity Providers
+
+1. **Add SAML IdP:**
+   - Import DoD enterprise IdP metadata
+   - Configure entity ID and SSO endpoints
+
+2. **Enable Force Authentication:**
+   - Ensures fresh authentication per session
+   - Prevents assertion reuse
+
+3. **Set Authentication Context Class Reference:**
+   - Require certificate-based authentication:
+     - `urn:oasis:names:tc:SAML:2.0:ac:classes:X509`
+     - `urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI`
+
+4. **Enable Assertion Encryption:**
+   - Required for FAL2 compliance
+   - Configure IdP to encrypt assertions using OCI IAM's public encryption key
+
+5. **Configure Group Mapping:**
+   - Map DoD IdP groups to OCI IAM groups
+   - Ensure privileged administrative groups require separate authentication context
+
+**Control Mapping:** IA-2, IA-2(12), IA-8(1)
+
+### 1.3 Alternative: X.509 Direct Authentication (Limited Use Cases)
+
+For scenarios requiring direct certificate authentication:
+
+**Navigation:** Identity & Security → Domains → [Domain] → Security → Identity Providers → Add X.509 IdP
+
+1. Configure trusted CA certificates (DoD Root CA hierarchy)
+2. Enable OCSP or CRL checking for certificate revocation validation
+3. Map certificate attributes to user identity
+
+**Limitation:** Federation through DoD IdP is preferred as it provides complete PKI validation within the DoD trust framework.
+
+---
+
+## 2. Multi-Factor Authentication (MFA)
+
+### 2.1 Factor Configuration
+
+**Navigation:** Domains → [Domain] → Security → MFA
+
+| Factor | IL4 | IL5 | Action |
+|--------|-----|-----|--------|
+| **FIDO2 Passkey Authenticator** | **Approved** | **Approved** | **Enable — Primary non-PKI option** |
+| Mobile App Passcode (TOTP) | Conditional | Conditional | Enable only with hardware-bound app |
+| Mobile App Notification | Conditional | Not Recommended | Disable for IL5 |
+| Bypass Code | Emergency Only | Emergency Only | Enable with strict administrative controls |
+| **SMS** | **Prohibited** | **Prohibited** | **DISABLE** |
+| **Email** | **Prohibited** | **Prohibited** | **DISABLE** |
+| **Phone Call** | **Prohibited** | **Prohibited** | **DISABLE** |
+
+**Control Mapping:** IA-2(1), IA-2(2), IA-2(6)
+
+### 2.2 FIDO2 Configuration
+
+**Navigation:** Domains → [Domain] → Authentication → FIDO
+
+| Setting | Value | Rationale |
+|---------|-------|-----------|
+| Attestation | Direct | Hardware verification |
+| Authenticator Attachment | Cross-platform (privileged), Platform allowed (standard) | Hardware keys required for admin access |
+| Resident Key | Required | Enables passwordless |
+| User Verification | Required | Ensures local authentication |
+| Timeout | 60000 ms | 60-second enrollment window |
+
+**Control Mapping:** IA-2(6), IA-2(8)
+
+### 2.3 Sign-On Policy Configuration
+
+**Navigation:** Domains → [Domain] → Security → Sign-on policies
+
+Create policy: **"DoD IL4/IL5 Authentication Policy"**
+
+#### Rule 1: DoD Privileged Access
+```
+Priority: 1
+Conditions:
+  - User is member of: [Administrators, Security Admins, etc.]
+Factors:
+  - Require: FIDO2 Passkey Authenticator
+  - Frequency: Every sign-in
+  - Enrollment: Required
+```
+
+#### Rule 2: DoD Standard Access
+```
+Priority: 2
+Conditions:
+  - All users
+Factors:
+  - Require: FIDO2 Passkey Authenticator OR Mobile App Passcode
+  - Frequency: Once per session
+  - Enrollment: Required
+```
+
+#### Rule 3: Federated Users (External IdP)
+```
+Priority: 3
+Conditions:
+  - Identity Provider: [DoD Enterprise IdP]
+Actions:
+  - MFA: Defer to IdP (CAC/PIV satisfies MFA requirement)
+```
+
+**Control Mapping:** IA-2, IA-5(1)
+
+---
+
+## 3. Federation and Protocols
+
+### 3.1 SAML 2.0 Requirements
+
+| Configuration | Requirement | OCI IAM Setting |
+|---------------|-------------|-----------------|
+| Assertion Signing | Required | IdP signs with SHA-256+ |
+| Assertion Encryption | Required (FAL2) | Enable "Encrypt Assertion" |
+| NameID Format | Persistent or Transient | Configure per IdP requirements |
+| Single Logout | Recommended | Enable SLO endpoints |
+| Assertion Lifetime | ≤5 minutes | Configured at IdP; validated by OCI IAM |
+| Single-Use Enforcement | Required | Default behavior |
+
+**Control Mapping:** IA-2(8), IA-8(1), SC-23
+
+### 3.2 Trust Relationship Documentation
+
+Maintain the following records for ATO evidence:
+
+- [ ] SAML metadata exchange dates and records
+- [ ] Certificate expiration dates and rotation schedule
+- [ ] Attribute mapping specifications
+- [ ] Authentication context requirements
+- [ ] Federation agreement documentation
+
+---
+
+## 4. Identity Assurance and Lifecycle Controls
+
+### 4.1 Identity Proofing Inheritance
+
+When federating with DoD IdP:
+
+- Identity proofing (IAL) is inherited from the authoritative identity source
+- DoD employees/contractors: **IAL3 via PIV issuance process** per FIPS 201-3
+- Document inheritance clearly in SSP control implementation statements
+
+**Control Mapping:** IA-12, IA-12(2)
+
+### 4.2 Account Provisioning
+
+| Method | Use Case | Configuration |
+|--------|----------|---------------|
+| **Just-in-Time (JIT) Provisioning** | Standard users | Enable in SAML IdP settings |
+| **SCIM Provisioning** | Automated lifecycle | Configure SCIM connector to authoritative source |
+| **Manual Provisioning** | Administrative accounts | Create with MFA enrollment required |
+
+**Navigation for JIT:** Identity Providers → [IdP] → JIT Settings → Enable
+
+**Control Mapping:** IA-4, IA-5
+
+### 4.3 Deprovisioning
+
+- Configure account disablement upon IdP assertion absence (for JIT)
+- Implement automated deprovisioning via SCIM for authoritative source sync
+- Document privileged account review procedures (**quarterly minimum**)
+- Implement immediate revocation capability for terminated personnel
+
+**Control Mapping:** AC-2, PS-4
+
+---
+
+## 5. Session Management and Token Controls
+
+### 5.1 Session Timeout Configuration
+
+**Navigation:** Domains → [Domain] → Settings → Session settings
+
+| Parameter | IL4 Setting | IL5 Setting |
+|-----------|-------------|-------------|
+| Session Duration (Max) | 720 minutes (12 hours) | 480 minutes (8 hours) |
+| Idle Timeout | 15 minutes | 15 minutes |
+| Remember Device | **Disabled** | **Disabled** |
+
+**Control Mapping:** AC-11, AC-12, SC-10
+
+### 5.2 Sign-On Policy Session Controls
+
+Within each sign-on rule:
+
+- Reauthentication: Required every session for privileged access
+- Trusted devices: **Disabled** for DoD environments
+- Session binding: Enable where available
+
+### 5.3 Token Configuration
+
+| Parameter | Setting | Rationale |
+|-----------|---------|-----------|
+| Access token lifetime | ≤1 hour | Limit exposure window |
+| Refresh token lifetime | ≤12 hours | Align with session maximum |
+| Token revocation on logout | Enabled | Immediate invalidation |
+| Refresh token rotation | Enabled | Prevent replay |
+
+**Token Binding Note:** Token binding is satisfied through proof-of-possession authenticators (FIDO2) and short-lived tokens, as OCI IAM does not implement TLS Token Binding (RFC 8471).
+
+**Control Mapping:** AC-12, IA-2(8), SC-23
+
+---
+
+## 6. Auditing, Logging, and ATO Evidence
+
+### 6.1 Required Authentication Events
+
+OCI Audit automatically captures:
+
+| Event Type | Event ID | Control Mapping |
+|------------|----------|-----------------|
+| User Login Success | `sso.authentication.success` | AU-2(a)(1) |
+| User Login Failure | `sso.authentication.failure` | AU-2(a)(2) |
+| MFA Challenge | `mfa.validation.*` | AU-2(a)(5) |
+| Session Creation | `session.create` | AU-2(a)(1) |
+| Session Termination | `session.terminate` | AU-2(a)(3) |
+| Password Change | `user.password.change` | AU-2(a)(6) |
+| Account Lockout | `user.account.lock` | AU-2(a)(4) |
+| Privilege Escalation | `iam.policy.*` | AU-2(a)(7) |
+
+### 6.2 SIEM Integration Architecture
+
+```
+[OCI IAM Identity Domain]
+         ↓
+    [OCI Audit Service]
+         ↓
+    [OCI Logging]
+         ↓
+    [Service Connector Hub]
+         ↓
+    [OCI Streaming (Kafka-compatible)]
+         ↓
+    [Log Shipper / Native Connector]
+         ↓
+    [DoD-Approved SIEM]
+```
+
+**Implementation Steps:**
+
+1. OCI Audit automatically captures IAM events (no configuration needed)
+2. Create Service Connector Hub:
+   - **Source:** OCI Audit (_Audit log group)
+   - **Filter:** Identity SignOn events
+   - **Target:** OCI Streaming or Object Storage
+3. Configure SIEM ingestion from Streaming (Kafka protocol) or Object Storage
+
+**Control Mapping:** AU-6, SI-4
+
+### 6.3 Log Retention Requirements
+
+| Log Type | DISA SRG Requirement | OCI Default | Customer Action |
+|----------|---------------------|-------------|-----------------|
+| Audit Logs | 1 year online, 3 years archived | 365 days | Archive to Object Storage with retention lock |
+| Authentication Events | 1 year | 365 days in OCI Audit | Forward to SIEM with extended retention |
+
+**Control Mapping:** AU-11
+
+### 6.4 ATO Evidence Checklist
+
+Prepare the following artifacts for assessment:
+
+- [ ] Sign-on policy export showing MFA enforcement
+- [ ] Identity provider federation configuration screenshots
+- [ ] SAML metadata exchange documentation
+- [ ] Audit log samples demonstrating event capture
+- [ ] SIEM integration configuration documentation
+- [ ] Session timeout configuration evidence
+- [ ] MFA factor configuration showing prohibited factors disabled
+- [ ] User provisioning/deprovisioning procedures
+- [ ] Privileged access review records
+- [ ] Federation agreement and trust documentation
+
+---
+
+## Related Documents
+
+- [DoD Authentication Standards](authentication-standards.md)
+- [OCI IAM Assessment](oci-iam-assessment.md)
+- [Executive Summary](executive-summary.md)
+- [Control Mappings and Appendices](appendices.md)
