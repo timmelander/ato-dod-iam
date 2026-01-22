@@ -239,16 +239,103 @@ For configuration, see [Implementation Guide: SAML 2.0 Federation Configuration]
 
 ---
 
-<a id="appendix-g-glossary"></a>
+<a id="appendix-g-nist-sp-800-171-rev-3-control-mapping"></a>
 
-## Appendix G: Glossary
+## Appendix G: NIST SP 800-171 Rev 3 Control Mapping
+
+NIST SP 800-171 Rev 3 establishes security requirements for protecting Controlled Unclassified Information (CUI) in nonfederal systems. This mapping shows how OCI IAM Identity Domains supports these requirements.
+
+For detailed gap analysis, see [NIST 800-171 Gap Analysis](nist-800-171-gap-analysis.md).
+
+<a id="g1-access-control-0301"></a>
+
+### G.1 Access Control (03.01)
+
+| Control | Control Name | OCI IAM Capability | Status |
+|---------|--------------|-------------------|--------|
+| 03.01.01 | System Account Management | SCIM provisioning, user lifecycle | Supported |
+| 03.01.02 | Access Enforcement | IAM policies, group membership | Supported |
+| 03.01.03 | Information Flow Enforcement | Compartments, network policies | Customer Config |
+| 03.01.04 | Separation of Duties | Role-based access, admin groups | Supported |
+| 03.01.05 | Least Privilege | Granular IAM policies | Supported |
+| 03.01.07 | Privileged Functions | Admin controls, audit logging | Supported |
+| 03.01.10 | Device Lock | Session idle timeout (≤15 min) | Supported |
+| 03.01.12 | Remote Access | Federation, VPN integration | Supported |
+| 03.01.20 | External Systems | Federation trust policies | Supported |
+
+<a id="g2-audit-and-accountability-0303"></a>
+
+### G.2 Audit and Accountability (03.03)
+
+| Control | Control Name | OCI IAM Capability | Status |
+|---------|--------------|-------------------|--------|
+| 03.03.01 | Event Logging | OCI Audit service | Supported |
+| 03.03.02 | Audit Record Content | Comprehensive event schema | Supported |
+| 03.03.03 | Audit Record Generation | Automatic capture | Supported |
+| 03.03.04 | Audit Record Storage | Object Storage retention | Supported |
+| 03.03.05 | Audit Review and Analysis | SIEM integration required | Customer Config |
+| 03.03.06 | Audit Reduction and Reporting | SIEM tools | Customer Config |
+| 03.03.08 | Protection of Audit Information | OCI Audit tamper protection | Inherited |
+
+<a id="g3-identification-and-authentication-0305"></a>
+
+### G.3 Identification and Authentication (03.05)
+
+| Control | Control Name | OCI IAM Capability | Status |
+|---------|--------------|-------------------|--------|
+| 03.05.01 | User Identification | Unique user identifiers | Supported |
+| 03.05.02 | Device Identification | API keys, instance principals | Supported |
+| 03.05.03 | Multi-factor Authentication | FIDO2, TOTP, CAC/PIV federation | Supported |
+| 03.05.04 | Replay-Resistant Authentication | SAML assertions, token expiration | Supported |
+| 03.05.05 | Identifier Management | 10-year reuse prevention | Process Required |
+| 03.05.06 | Authenticator Management | MFA enrollment, credential lifecycle | Supported |
+| 03.05.07 | Authenticator Feedback | Masked password entry | Supported |
+| 03.05.08 | Cryptographic Module Authentication | FIPS-validated modules | Inherited |
+| 03.05.09 | Password-Based Authentication | 16+ char policy (DoD ODP) | Supported |
+
+<a id="g4-system-and-communications-protection-0313"></a>
+
+### G.4 System and Communications Protection (03.13)
+
+| Control | Control Name | OCI IAM Capability | Status |
+|---------|--------------|-------------------|--------|
+| 03.13.03 | Information at Rest | Encryption at rest | Inherited |
+| 03.13.04 | Information in Transit | TLS 1.2+ encryption | Inherited |
+| 03.13.05 | Session Termination | Session timeout, logout | Supported |
+| 03.13.06 | Network Disconnect | Session termination | Supported |
+| 03.13.08 | Transmission Confidentiality | TLS encryption | Inherited |
+| 03.13.11 | Cryptographic Protection | FIPS-validated modules | Inherited |
+
+<a id="g5-dod-organization-defined-parameters"></a>
+
+### G.5 DoD Organization-Defined Parameters (ODPs)
+
+| Control | Parameter | DoD Value |
+|---------|-----------|-----------|
+| 03.01.01 | Inactive account disable | 90 days |
+| 03.01.10 | Device lock timeout | ≤15 minutes |
+| 03.01.01 | Session logout threshold | ≤24 hours |
+| 03.05.05 | Identifier reuse prevention | 10 years |
+| 03.05.09 | Minimum password length | 16 characters |
+| 03.13.11 | Cryptographic standard | FIPS Validated |
+
+**Reference:** [DoD ODP Values](https://dodcio.defense.gov/Portals/0/Documents/CMMC/OrgDefinedParmsNISTSP800-171.pdf)
+
+---
+
+<a id="appendix-h-glossary"></a>
+
+## Appendix H: Glossary
 
 | Term | Definition |
 |------|------------|
 | AAL | Authentication Assurance Level per [NIST SP 800-63B](authentication-standards.md#2-authentication-assurance-level-aal-requirements) |
 | ATO | Authority to Operate |
 | CAC | Common Access Card |
-| CUI | Controlled Unclassified Information |
+| CMMC | Cybersecurity Maturity Model Certification — DoD cybersecurity standard based on NIST 800-171 |
+| CUI | Controlled Unclassified Information — see [NIST 800-171 Gap Analysis](nist-800-171-gap-analysis.md) |
+| DFARS | Defense Federal Acquisition Regulation Supplement |
+| DIB | Defense Industrial Base |
 | FAL | Federation Assurance Level per [NIST SP 800-63C](#appendix-f-federation-assurance-level-fal-reference) |
 | IAL | Identity Assurance Level per [NIST SP 800-63A](authentication-standards.md#6-identity-assurance-level-ial-requirements) |
 | ICAM | Identity, Credential, and Access Management |
@@ -259,11 +346,13 @@ For configuration, see [Implementation Guide: SAML 2.0 Federation Configuration]
 | JIT | Just-in-Time (provisioning) — see [Implementation Guide](implementation-guide.md#42-account-provisioning) |
 | MFA | Multi-Factor Authentication — see [MFA Compliance Matrix](#appendix-e-mfa-factor-compliance-matrix) |
 | NSS | National Security Systems |
+| ODP | Organization-Defined Parameter — see [NIST 800-171 DoD ODPs](#g5-dod-organization-defined-parameters) |
 | OIDC | OpenID Connect |
 | OCSP | Online Certificate Status Protocol |
 | OCI | Oracle Cloud Infrastructure |
 | PIV | Personal Identity Verification |
 | PKI | Public Key Infrastructure |
+| POA&M | Plan of Action and Milestones |
 | SAML | Security Assertion Markup Language |
 | SCIM | System for Cross-domain Identity Management |
 | SIEM | Security Information and Event Management |
@@ -280,3 +369,4 @@ For configuration, see [Implementation Guide: SAML 2.0 Federation Configuration]
 - [OCI IAM Assessment](oci-iam-assessment.md) — Platform suitability evaluation
 - [Implementation Guide](implementation-guide.md) — Step-by-step configuration guidance
 - [Executive Summary](executive-summary.md) — One-page ATO determination
+- [NIST 800-171 Gap Analysis](nist-800-171-gap-analysis.md) — CUI protection compliance assessment

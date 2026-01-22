@@ -161,7 +161,8 @@ Identity Domain must be **Premium** or **Oracle Apps Premium** type to access th
 
 ## Related Documents
 
-- [DoD Authentication Standards](authentication-standards.md)
-- [Implementation Guide](implementation-guide.md)
-- [Executive Summary](executive-summary.md)
-- [Control Mappings and Appendices](appendices.md)
+- [DoD Authentication Standards](authentication-standards.md) — Policy requirements and mandatory controls
+- [Implementation Guide](implementation-guide.md) — Step-by-step configuration guidance
+- [Executive Summary](executive-summary.md) — One-page ATO determination
+- [NIST 800-171 Gap Analysis](nist-800-171-gap-analysis.md) — CUI protection compliance assessment
+- [Control Mappings and Appendices](appendices.md) — Control mappings, reference tables, glossary

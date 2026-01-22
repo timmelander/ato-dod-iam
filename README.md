@@ -21,11 +21,12 @@ This documentation assists security architects, ISSOs, and compliance teams in:
 
 | Standard | Description |
 |----------|-------------|
-| DoDI 8520.03 | Identification and Authentication for DoD Information Systems |
-| NIST SP 800-63-4 | Digital Identity Guidelines (IAL, AAL, FAL) |
-| NIST SP 800-53 Rev 5 | Security and Privacy Controls (IA, AC, AU families) |
 | DISA Cloud Computing SRG v1r5 | Cloud Security Requirements by Impact Level |
 | DoD CIO MFA Policy (2024) | Multi-Factor Authentication Requirements |
+| DoDI 8520.03 | Identification and Authentication for DoD Information Systems |
+| NIST SP 800-53 Rev 5 | Security and Privacy Controls (IA, AC, AU families) |
+| NIST SP 800-63-4 | Digital Identity Guidelines (IAL, AAL, FAL) |
+| NIST SP 800-171 Rev 3 | CUI Protection for Nonfederal Systems (DFARS, CMMC) |
 
 ---
 
@@ -45,6 +46,7 @@ This documentation assists security architects, ISSOs, and compliance teams in:
 | [Authentication Standards](docs/authentication-standards.md) | DoD-approved authentication requirements for web applications |
 | [OCI IAM Assessment](docs/oci-iam-assessment.md) | Suitability evaluation of Oracle IAM Identity Domains |
 | [Implementation Guide](docs/implementation-guide.md) | Step-by-step configuration guidance for compliance |
+| [NIST 800-171 Gap Analysis](docs/nist-800-171-gap-analysis.md) | CUI protection compliance assessment and CMMC alignment |
 | [Appendices](docs/appendices.md) | Control mappings, responsibility matrix, and reference tables |
 
 ---

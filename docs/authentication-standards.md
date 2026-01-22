@@ -13,15 +13,16 @@
 
 | Document | Applicability | Reference |
 |----------|---------------|-----------|
-| **DoDI 8520.02** | PKI and Public Key Enabling policies | [DoD Issuances](https://www.esd.whs.mil/Directives/) |
-| **DoDI 8520.03** | Primary authentication instruction for DoD information systems | [DoD Issuances](https://www.esd.whs.mil/Directives/) |
-| **NIST SP 800-63-4** | Digital identity guidelines (IAL, AAL, FAL) | [NIST Publications](https://pages.nist.gov/800-63-4/) |
-| **NIST SP 800-53 Rev 5** | Security controls baseline (IA family) | [Control Mapping](appendices.md#appendix-a-nist-sp-800-53-rev-5-control-mapping) |
-| **DISA Cloud Computing SRG v1r5** | Cloud-specific authentication requirements by Impact Level | [Session Thresholds](appendices.md#appendix-d-session-timeout-reference) |
 | **CNSSI 1253** | Security categorization for National Security Systems | — |
-| **FIPS 201-3** | PIV credential and authentication requirements | — |
+| **DISA Cloud Computing SRG v1r5** | Cloud-specific authentication requirements by Impact Level | [Session Thresholds](appendices.md#appendix-d-session-timeout-reference) |
 | **DoD CIO MFA Policy (2024)** | Non-PKI MFA approval and implementation requirements | [MFA Matrix](appendices.md#appendix-e-mfa-factor-compliance-matrix) |
 | **DoD ICAM Federation Framework** | Federation practices and trust relationships | [FAL Reference](appendices.md#appendix-f-federation-assurance-level-fal-reference) |
+| **DoDI 8520.02** | PKI and Public Key Enabling policies | [DoD Issuances](https://www.esd.whs.mil/Directives/) |
+| **DoDI 8520.03** | Primary authentication instruction for DoD information systems | [DoD Issuances](https://www.esd.whs.mil/Directives/) |
+| **FIPS 201-3** | PIV credential and authentication requirements | — |
+| **NIST SP 800-53 Rev 5** | Security controls baseline (IA family) | [Control Mapping](appendices.md#appendix-a-nist-sp-800-53-rev-5-control-mapping) |
+| **NIST SP 800-63-4** | Digital identity guidelines (IAL, AAL, FAL) | [NIST Publications](https://pages.nist.gov/800-63-4/) |
+| **NIST SP 800-171 Rev 3** | CUI protection for nonfederal systems (DFARS, CMMC) | [Gap Analysis](nist-800-171-gap-analysis.md) |
 
 ---
 
@@ -234,3 +235,4 @@ For complete ATO evidence checklist, see [Implementation Guide: ATO Evidence Che
 - [Implementation Guide](implementation-guide.md) — Step-by-step configuration guidance
 - [Executive Summary](executive-summary.md) — One-page ATO determination
 - [Control Mappings and Appendices](appendices.md) — NIST 800-53 mappings, reference tables
+- [NIST 800-171 Gap Analysis](nist-800-171-gap-analysis.md) — CUI protection compliance assessment

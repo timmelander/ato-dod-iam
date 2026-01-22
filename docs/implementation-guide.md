@@ -368,4 +368,5 @@ Prepare the following artifacts for assessment (see [ATO Assessor Expectations](
 - [DoD Authentication Standards](authentication-standards.md) — Policy requirements and mandatory controls
 - [OCI IAM Assessment](oci-iam-assessment.md) — Platform suitability evaluation
 - [Executive Summary](executive-summary.md) — One-page ATO determination
+- [NIST 800-171 Gap Analysis](nist-800-171-gap-analysis.md) — CUI protection compliance assessment
 - [Control Mappings and Appendices](appendices.md) — NIST 800-53 mappings, reference tables

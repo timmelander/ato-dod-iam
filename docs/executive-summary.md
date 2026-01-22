@@ -21,11 +21,12 @@ This assessment evaluates whether **Oracle IAM Identity Domains**, when deployed
 
 | Standard | Description | Reference |
 |----------|-------------|-----------|
-| DoDI 8520.03 | Identification and Authentication | [Authentication Standards](authentication-standards.md#governing-policy) |
 | DISA Cloud Computing SRG v1r5 | Cloud security requirements by IL | [Session Timeout Reference](appendices.md#appendix-d-session-timeout-reference) |
-| NIST SP 800-63-4 | Digital Identity Guidelines (AAL/FAL) | [AAL Requirements](authentication-standards.md#2-authentication-assurance-level-aal-requirements) |
-| NIST SP 800-53 Rev. 5 | Security Controls (IA, AC, AU) | [Control Mapping](appendices.md#appendix-a-nist-sp-800-53-rev-5-control-mapping) |
 | DoD CIO MFA Policy (2024) | MFA requirements | [MFA Compliance Matrix](appendices.md#appendix-e-mfa-factor-compliance-matrix) |
+| DoDI 8520.03 | Identification and Authentication | [Authentication Standards](authentication-standards.md#governing-policy) |
+| NIST SP 800-53 Rev. 5 | Security Controls (IA, AC, AU) | [Control Mapping](appendices.md#appendix-a-nist-sp-800-53-rev-5-control-mapping) |
+| NIST SP 800-63-4 | Digital Identity Guidelines (AAL/FAL) | [AAL Requirements](authentication-standards.md#2-authentication-assurance-level-aal-requirements) |
+| NIST SP 800-171 Rev. 3 | CUI Protection (DFARS, CMMC) | [Gap Analysis](nist-800-171-gap-analysis.md) |
 
 ---
 
@@ -174,4 +175,5 @@ When these conditions are met, Oracle IAM Identity Domains fully satisfies DoD a
 - [DoD Authentication Standards](authentication-standards.md) — Policy requirements and mandatory controls
 - [OCI IAM Assessment](oci-iam-assessment.md) — Platform suitability evaluation
 - [Implementation Guide](implementation-guide.md) — Step-by-step configuration guidance
+- [NIST 800-171 Gap Analysis](nist-800-171-gap-analysis.md) — CUI protection compliance assessment
 - [Control Mappings and Appendices](appendices.md) — NIST 800-53 mappings, reference tables, glossary
